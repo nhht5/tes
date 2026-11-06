@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090d18">
+<title>GameZone Community</title>
+<style>
+:root{--bg:#090d18;--panel:#121b2b;--panel2:#1a2740;--line:#ffffff18;--txt:#f4f7ff;--muted:#9aa8bd;--purple:#795cff;--cyan:#35d9cb}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% -10%,#29205a 0,transparent 34%),var(--bg);color:var(--txt);font-family:Arial,sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.wrap{max-width:1100px;margin:auto;padding:24px}.brand{font-size:25px;font-weight:900;letter-spacing:.5px}.brand span{color:var(--cyan)}
+.auth-shell{min-height:100vh;display:grid;place-items:center;padding:22px}.auth{width:min(430px,100%);padding:30px;background:#111a2bf2;border:1px solid var(--line);border-radius:22px;box-shadow:0 20px 80px #0008}
+.auth .brand{margin-bottom:10px}.muted{color:var(--muted);line-height:1.55}.tabs{display:flex;gap:8px;margin:22px 0}.tabs button{flex:1;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--muted)}.tabs button.active{background:var(--purple);color:white}
+label{display:block;margin:13px 0 7px;font-size:13px;color:#cbd5e1}input{width:100%;padding:13px 14px;background:#0a1220;border:1px solid #ffffff25;border-radius:10px;color:white;outline:none}input:focus{border-color:var(--cyan)}
+.primary{background:var(--purple);color:white;border:0;border-radius:10px;padding:13px 16px;font-weight:700}.primary:hover{filter:brightness(1.12)}.wide{width:100%;margin-top:18px}.notice{font-size:13px;min-height:20px;margin-top:12px;color:var(--cyan)}
+.topbar{border-bottom:1px solid var(--line);background:#090d18ee;position:sticky;top:0;z-index:2}.topinner{max-width:1100px;margin:auto;padding:15px 22px;display:flex;align-items:center;justify-content:space-between;gap:15px}.userline{display:flex;align-items:center;gap:12px}.avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--purple),var(--cyan));font-weight:bold}
+.layout{display:grid;grid-template-columns:260px 1fr;gap:18px;margin-top:24px}.side,.content{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:19px}.side h3{margin:4px 0 14px}.menuitem{display:block;padding:12px;border-radius:10px;color:#d8e0f0;background:var(--panel2);margin:8px 0}.welcome{padding:18px;border-radius:14px;background:linear-gradient(110deg,#292052,#163d49);margin-bottom:18px}.welcome h1{margin:4px 0 8px;font-size:25px}.stats{display:flex;gap:10px;flex-wrap:wrap}.pill{background:#ffffff12;border:1px solid var(--line);padding:8px 11px;border-radius:20px;font-size:12px;color:#d5deed}
+.chat{display:flex;flex-direction:column;height:min(65vh,620px);min-height:430px}.chathead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:13px}.chathead h2{margin:0;font-size:19px}.messages{flex:1;overflow:auto;padding:14px 2px;display:flex;flex-direction:column;gap:12px}.msg{max-width:85%;align-self:flex-start;background:var(--panel2);border:1px solid var(--line);padding:10px 12px;border-radius:12px 12px 12px 3px;overflow-wrap:anywhere}.msg.mine{align-self:flex-end;background:#33276a;border-radius:12px 12px 3px 12px}.msgmeta{font-size:11px;color:var(--cyan);margin-bottom:5px}.msgtime{font-size:10px;color:#aab5c8;margin-top:5px;text-align:right}.composer{display:flex;gap:9px;border-top:1px solid var(--line);padding-top:13px}.composer input{flex:1;min-width:0}.composer button{padding:0 18px}
+.small{font-size:12px;color:var(--muted)}.error{color:#ff9b9b}.ok{color:var(--cyan)}
+@media(max-width:720px){.layout{grid-template-columns:1fr}.side{display:none}.wrap{padding:14px}.topinner{padding:12px 14px}.chat{height:65vh;min-height:390px}.auth{padding:24px}}
+</style>
+</head>
+<body>
+<section id="authView" class="auth-shell">
+ <div class="auth">
+  <div class="brand">GAME<span>ZONE</span></div>
+  <h1 id="authTitle">Selamat datang!</h1>
+  <p class="muted">Masuk atau buat akun untuk bergabung dengan komunitas GameZone.</p>
+  <div class="tabs"><button id="loginTab" class="active" type="button">Login</button><button id="registerTab" type="button">Buat Akun</button></div>
+  <form id="authForm">
+   <div id="nameField" class="hidden"><label for="username">Username</label><input id="username" maxlength="24" autocomplete="nickname" placeholder="Contoh: gamer123"></div>
+   <label for="email">Email</label><input id="email" type="email" autocomplete="email" required placeholder="nama@email.com">
+   <label for="password">Password</label><input id="password" type="password" minlength="6" autocomplete="current-password" required placeholder="Minimal 6 karakter">
+   <button class="primary wide" id="submitAuth" type="submit">Login</button>
+  </form>
+  <div id="authNotice" class="notice" role="status"></div>
+  <p class="small">Gunakan akun milikmu sendiri. Jangan membagikan password kepada siapa pun.</p>
+ </div>
+</section>
+<section id="appView" class="hidden">
+ <header class="topbar"><div class="topinner"><div class="brand">GAME<span>ZONE</span></div><div class="userline"><div class="avatar" id="avatar">G</div><div><strong id="topUsername">Player</strong><div class="small">Anggota GameZone</div></div><button id="logoutBtn" class="primary" type="button">Keluar</button></div></div></header>
+ <main class="wrap">
+  <div class="layout">
+   <aside class="side"><h3>Menu Utama</h3><div class="menuitem">🏠 Beranda</div><div class="menuitem">💬 Grup Komunitas</div><div class="menuitem">🎮 Game</div><p class="small">Semua pengguna yang login dapat bergabung ke grup umum.</p></aside>
+   <section class="content">
+    <div class="welcome"><div class="small">KOMUNITAS GAMEZONE</div><h1>Halo, <span id="welcomeName">Player</span>! 👋</h1><p class="muted">Kamu sudah bergabung ke grup umum. Sapa anggota lainnya dengan sopan.</p><div class="stats"><span class="pill">🟢 Grup umum</span><span class="pill">⚡ Chat langsung</span><span class="pill">☁️ Tersimpan online</span></div></div>
+    <div class="chat">
+     <div class="chathead"><div><h2>💬 Grup Anggota GameZone</h2><div class="small">Semua anggota yang login dapat membaca dan mengirim pesan</div></div><span class="pill">PUBLIC</span></div>
+     <div id="messages" class="messages" aria-live="polite"><p class="muted">Memuat percakapan...</p></div>
+     <form id="messageForm" class="composer"><input id="messageInput" maxlength="1000" placeholder="Tulis pesan..." autocomplete="off" required><button class="primary" id="sendBtn" type="submit">Kirim</button></form>
+     <div id="chatNotice" class="small" role="status"></div>
+    </div>
+   </section>
+  </div>
+ </main>
+</section>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import { getAuth, setPersistence, browserLocalPersistence, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, orderBy, limitToLast, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+/* GANTI nilai konfigurasi ini dengan konfigurasi aplikasi Firebase milikmu. */
+const firebaseConfig = {
+  apiKey: "ISI_API_KEY",
+  authDomain: "ISI_PROJECT_ID.firebaseapp.com",
+  projectId: "ISI_PROJECT_ID",
+  storageBucket: "ISI_PROJECT_ID.appspot.com",
+  messagingSenderId: "ISI_MESSAGING_SENDER_ID",
+  appId: "ISI_APP_ID"
+};
+
+const configured = !Object.values(firebaseConfig).some(v => String(v).startsWith("ISI_"));
+const authView=document.getElementById("authView"), appView=document.getElementById("appView");
+const notice=document.getElementById("authNotice");
+let mode="login", auth, db, stopMessages=null, currentUser=null;
+
+function showNotice(el,text,isError=false){el.textContent=text;el.className=isError?"notice error":"notice";}
+function setMode(next){mode=next;document.getElementById("loginTab").classList.toggle("active",mode==="login");document.getElementById("registerTab").classList.toggle("active",mode==="register");document.getElementById("nameField").classList.toggle("hidden",mode!=="register");document.getElementById("authTitle").textContent=mode==="login"?"Selamat datang!":"Buat akun baru";document.getElementById("submitAuth").textContent=mode==="login"?"Login":"Daftar akun";document.getElementById("password").autocomplete=mode==="login"?"current-password":"new-password";showNotice(notice,"");}
+document.getElementById("loginTab").onclick=()=>setMode("login");
+document.getElementById("registerTab").onclick=()=>setMode("register");
+
+if(!configured){showNotice(notice,"Website belum terhubung ke Firebase. Isi konfigurasi Firebase terlebih dahulu.",true);}
+else{
+ const app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app);
+ setPersistence(auth,browserLocalPersistence).catch(e=>showNotice(notice,e.message,true));
+ onAuthStateChanged(auth,async user=>{
+  currentUser=user;
+  if(user){
+   try{
+    const profileRef=doc(db,"users",user.uid), snap=await getDoc(profileRef);
+    let username=snap.exists()?snap.data().username:(user.displayName||user.email.split("@")[0]);
+    await setDoc(profileRef,{username,email:user.email,updatedAt:serverTimestamp()},{merge:true});
+    document.getElementById("topUsername").textContent=username;document.getElementById("welcomeName").textContent=username;document.getElementById("avatar").textContent=username.charAt(0).toUpperCase();
+    authView.classList.add("hidden");appView.classList.remove("hidden");startChat();
+   }catch(e){showNotice(notice,"Gagal memuat profil: "+e.message,true);}
+  }else{if(stopMessages){stopMessages();stopMessages=null;}appView.classList.add("hidden");authView.classList.remove("hidden");}
+ });
+}
+
+document.getElementById("authForm").addEventListener("submit",async e=>{
+ e.preventDefault();if(!configured)return;
+ const email=document.getElementById("email").value.trim(),password=document.getElementById("password").value,username=document.getElementById("username").value.trim();
+ try{
+  document.getElementById("submitAuth").disabled=true;showNotice(notice,"Memproses...");
+  if(mode==="register"){
+   if(username.length<3)throw new Error("Username minimal 3 karakter.");
+   const cred=await createUserWithEmailAndPassword(auth,email,password);
+   await updateProfile(cred.user,{displayName:username});
+   await setDoc(doc(db,"users",cred.user.uid),{username,email:cred.user.email,createdAt:serverTimestamp()});
+  }else{await signInWithEmailAndPassword(auth,email,password);}
+  showNotice(notice,"Berhasil. Membuka GameZone...");
+ }catch(err){showNotice(notice,friendlyError(err),true);}
+ finally{document.getElementById("submitAuth").disabled=false;}
+});
+function friendlyError(e){const c=e.code||"";if(c.includes("email-already-in-use"))return"Email sudah terdaftar. Silakan login.";if(c.includes("invalid-credential")||c.includes("wrong-password"))return"Email atau password salah.";if(c.includes("weak-password"))return"Password minimal 6 karakter.";if(c.includes("invalid-email"))return"Format email tidak valid.";if(c.includes("network-request-failed"))return"Koneksi internet bermasalah.";return e.message||"Terjadi kesalahan.";}
+
+document.getElementById("logoutBtn").onclick=()=>signOut(auth);
+function startChat(){
+ if(stopMessages)stopMessages();
+ const q=query(collection(db,"groupMessages"),orderBy("createdAt","asc"),limitToLast(100));
+ stopMessages=onSnapshot(q,async snapshot=>{
+  const box=document.getElementById("messages");box.replaceChildren();
+  if(snapshot.empty){const p=document.createElement("p");p.className="muted";p.textContent="Belum ada pesan. Jadilah yang pertama menyapa!";box.append(p);}
+  snapshot.forEach(d=>{
+   const m=d.data(),mine=m.uid===currentUser.uid,wrap=document.createElement("div");wrap.className="msg"+(mine?" mine":"");
+   const meta=document.createElement("div");meta.className="msgmeta";meta.textContent=mine?"Kamu":(m.username||"Anggota");
+   const body=document.createElement("div");body.textContent=m.text||"";
+   const time=document.createElement("div");time.className="msgtime";time.textContent=m.createdAt?.toDate?m.createdAt.toDate().toLocaleString("id-ID",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"short"}):"baru saja";
+   wrap.append(meta,body,time);box.append(wrap);
+  });box.scrollTop=box.scrollHeight;
+ },err=>document.getElementById("chatNotice").textContent="Tidak dapat memuat chat: "+err.message);
+}
+document.getElementById("messageForm").addEventListener("submit",async e=>{
+ e.preventDefault();const input=document.getElementById("messageInput"),text=input.value.trim();if(!text||!currentUser)return;
+ const btn=document.getElementById("sendBtn");btn.disabled=true;
+ try{const profile=await getDoc(doc(db,"users",currentUser.uid));const username=profile.exists()?profile.data().username:(currentUser.displayName||"Anggota");await addDoc(collection(db,"groupMessages"),{uid:currentUser.uid,username,text,createdAt:serverTimestamp()});input.value="";document.getElementById("chatNotice").textContent="";}
+ catch(err){document.getElementById("chatNotice").textContent="Pesan gagal dikirim: "+err.message;}
+ finally{btn.disabled=false;input.focus();}
+});
+</script>
+</body></html>
